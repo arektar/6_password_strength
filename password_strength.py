@@ -11,25 +11,32 @@ def check_in_blacklist(password):
     return password_in_blacklist
 
 
+def look_special_numbers(password):
+    counts = 0
+    re_phone_number = re.search(".?\d.?.?\d{3}.?.?\d{3}.?\d{2}.?\d{2}", password)
+    re_date = re.search("[0-3]\d.?[0-1]\d.?(\d{4}|\d{2})", password)
+    re_car_number = re.search("[а-я]\d{3}[а-я]{2}(\d{2,3})?", password)
+    if re_phone_number.group(0):
+        counts += 1
+    if re_date.group(0):
+        counts += 1
+    if re_car_number.group(0):
+        counts += 1
+    return counts
+
+
 def get_password_strength(password):
     good_pass_len = 8
     great_pass_len = 12
     pass_power = 0
-    re_phone_number = re.search(".?\d.?.?\d{3}.?.?\d{3}.?\d{2}.?\d{2}", password)
-    re_date = re.search("[0-3]\d.?[0-1]\d.?(\d{4}|\d{2})", password)
-    re_car_number = re.search("[а-я]\d{3}[а-я]{2}(\d{2,3})?", password)
+
     if password.lower() != password:
         pass_power += 1
     if password.upper() != password:
         pass_power += 1
     if re.search("[1-9]", password).group(0):
-        pass_power += 1
-        if not re_phone_number.group(0):
-            pass_power += 1
-        if not re_date.group(0):
-            pass_power += 1
-        if not re_car_number.group(0):
-            pass_power += 1
+        pass_power += 4 - look_special_numbers(password)
+
     if re.search("\W", password).group(0):
         pass_power += 1
     if len(password) > good_pass_len:
