@@ -1,4 +1,5 @@
 import re
+import getpass
 
 
 def check_in_blacklist(password):
@@ -41,5 +42,5 @@ def get_password_strength(password):
 
 
 if __name__ == '__main__':
-    my_password = input("Write password: ")
+    my_password = getpass.getpass()
     print("Ваш пароль получает %d баллов из 10" % (get_password_strength(my_password)))
