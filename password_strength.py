@@ -11,41 +11,20 @@ def check_in_blacklist(password):
     return password_in_blacklist
 
 
-def look_special_numbers(password):
-    counts = 0
-    re_phone_number = re.search(".?\d.?.?\d{3}.?.?\d{3}.?\d{2}.?\d{2}", password)
-    re_date = re.search("[0-3]\d.?[0-1]\d.?(\d{4}|\d{2})", password)
-    re_car_number = re.search("[а-я]\d{3}[а-я]{2}(\d{2,3})?", password)
-    if re_phone_number.group(0):
-        counts += 1
-    if re_date.group(0):
-        counts += 1
-    if re_car_number.group(0):
-        counts += 1
-    return counts
-
-
 def get_password_strength(password):
-    good_pass_len = 8
-    great_pass_len = 12
-    pass_power = 0
-
-    if password.lower() != password:
-        pass_power += 1
-    if password.upper() != password:
-        pass_power += 1
-    if re.search("[1-9]", password).group(0):
-        pass_power += 4 - look_special_numbers(password)
-
-    if re.search("\W", password).group(0):
-        pass_power += 1
-    if len(password) > good_pass_len:
-        pass_power += 1
-        if len(password) > great_pass_len:
-            pass_power += 1
-    if not check_in_blacklist(password):
-        pass_power += 1
-    return pass_power
+    good_pass_len = 6
+    not_only_low_reg = bool(password.lower() != password)
+    not_only_upp_reg = bool(password.upper() != password)
+    include_numbers = re.search("[1-9]", password).group(0) is not None
+    not_phone_number = re.search(".?\d.?.?\d{3}.?.?\d{3}.?\d{2}.?\d{2}", password).group(0) is None
+    not_date = re.search("[0-3]\d.?[0-1]\d.?(\d{4}|\d{2})", password).group(0) is None
+    not_car_number = re.search("[а-я]\d{3}[а-я]{2}(\d{2,3})?", password).group(0) is None
+    include_special_sim = re.search("\W", password).group(0) is not None
+    good_len = len(password) > good_pass_len
+    great_len = len(password) > (good_pass_len * 2)
+    not_in_blacklist = check_in_blacklist(password) is False
+    return sum(not_only_low_reg, not_only_upp_reg, include_numbers, not_phone_number, not_date, not_car_number,
+               include_special_sim, good_len, great_len, not_in_blacklist)
 
 
 if __name__ == '__main__':
