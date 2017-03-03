@@ -4,7 +4,6 @@
 
 Пример работы программы: (ввод пароля экранируется)
 ```sh
-C:\Users\Алексей>python C:\Users\Алексей\PycharmProjects\untitled1\password_strength.py
 Password:
 Ваш пароль получает 9 баллов из 10
 ```
